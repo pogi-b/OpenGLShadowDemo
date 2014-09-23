@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/change_bias_type"
+          android:title="@string/change_bias_type">
+          <menu>
+			<group android:checkableBehavior="single">
+		        <item android:id="@+id/bias_type_constant"
+		              android:title="@string/bias_type_constant" 
+		              android:checked="true"/>
+		        <item android:id="@+id/bias_type_dynamic"
+		              android:title="@string/bias_type_dynamic" />
+		    </group>
+	    </menu>
+    </item>
+    <item android:id="@+id/change_depth_map_size"
+          android:title="@string/change_depth_map_size">
+          <menu>
+			<group android:checkableBehavior="single">
+		        <item android:id="@+id/depth_map_size_0"
+		              android:title="@string/depth_map_size_0" />
+		        <item android:id="@+id/depth_map_size_1"
+		              android:title="@string/depth_map_size_1" 
+		              android:checked="true"/>
+		        <item android:id="@+id/depth_map_size_2"
+		              android:title="@string/depth_map_size_2" />
+		        <item android:id="@+id/depth_map_size_3"
+		              android:title="@string/depth_map_size_3" />
+		    </group>
+	    </menu>
+    </item>
+    <item android:id="@+id/change_shadow_type"
+          android:title="@string/change_shadow_type">
+		<menu>
+			<group android:checkableBehavior="single">
+		        <item android:id="@+id/shadow_type_simple"
+		              android:title="@string/shadow_type_simple" 
+		              android:checked="true"/>"
+		        <item android:id="@+id/shadow_type_pcf"
+		              android:title="@string/shadow_type_pcf" />
+		    </group>
+	    </menu>
+    </item>
+</menu>
