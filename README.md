@@ -10,5 +10,5 @@ PCF shadow mapping algorithm
 
 Options menu to change bias type, shadow map size and algorithm
 
-Works with and without OES_depth_texture extension
+Works with and without OES_depth_texture OpenGL extension
 
