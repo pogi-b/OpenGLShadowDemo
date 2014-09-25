@@ -3,10 +3,10 @@ package com.projectI.openglshadowdemo;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.projectI.openglshadowdemo.R;
 import com.projectI.openglshadowdemo.ShadowsActivity;
 import com.projectI.openglshadowdemo.common.RenderConstants;
 import com.projectI.openglshadowdemo.common.FPSCounter;
-import com.example.openglshadowdemo.R;
 import com.projectI.openglshadowdemo.common.RenderProgram;
 
 import android.opengl.GLES20;

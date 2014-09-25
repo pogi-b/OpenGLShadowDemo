@@ -1,6 +1,6 @@
 package com.projectI.openglshadowdemo;
 
-import com.example.openglshadowdemo.R;
+import com.projectI.openglshadowdemo.R;
 
 import android.app.Activity;
 import android.opengl.GLSurfaceView;

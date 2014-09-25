@@ -47,7 +47,7 @@ float shadowSimple()
 	//add bias to reduce shadow acne (error margin)
 	float bias = 0.0005;
 
-	//1.0 = not in shadow
+	//1.0 = not in shadow (fragmant is closer to light than the value stored in shadow map)
 	//0.0 = in shadow
 	return float(distanceFromLight > shadowMapPosition.z - bias);
 }
