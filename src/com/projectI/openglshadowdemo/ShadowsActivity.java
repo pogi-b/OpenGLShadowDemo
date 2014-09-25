@@ -23,7 +23,9 @@ public class ShadowsActivity extends Activity {
         // as the ContentView for this Activity
         mGLView = new ShadowsGLSurfaceView(this);
         
+        // Create an OpenGL ES 2.0 context.
         mGLView.setEGLContextClientVersion(2);
+        
 		renderer = new ShadowsRenderer(this);
 		mGLView.setRenderer(renderer);
         

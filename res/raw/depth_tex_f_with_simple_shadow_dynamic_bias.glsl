@@ -2,6 +2,7 @@
 // from Shayan Javed
 // And dEngine source from Fabien Sanglard
 
+//precision highp float;
 precision mediump float;
 
 // The position of the light in eye space.
@@ -55,6 +56,8 @@ float shadowSimple()
 	//add bias to reduce shadow acne (error margin)
 	float bias = calcBias();
 
+	//1.0 = not in shadow (fragmant is closer to light than the value stored in shadow map)
+	//0.0 = in shadow
 	return float(distanceFromLight > shadowMapPosition.z - bias);
 }
   

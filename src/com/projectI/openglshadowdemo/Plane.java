@@ -19,12 +19,12 @@ public class Plane {
 
 	float[] planePositionData = {
 			// X, Y, Z, 
-			-25.0f, -5, -25.0f + translateZ,				
-			-25.0f, -5, 25.0f + translateZ, 
-			25.0f, -5, -25.0f + translateZ, 
-			-25.0f, -5, 25.0f + translateZ, 				
-			25.0f, -5, 25.0f + translateZ, 
-			25.0f, -5, -25.0f + translateZ
+			-25.0f, -5.0f, -25.0f + translateZ,				
+			-25.0f, -5.0f, 25.0f + translateZ, 
+			25.0f, -5.0f, -25.0f + translateZ, 
+			-25.0f, -5.0f, 25.0f + translateZ, 				
+			25.0f, -5.0f, 25.0f + translateZ, 
+			25.0f, -5.0f, -25.0f + translateZ
 			};
 
 	float[] planeNormalData = {

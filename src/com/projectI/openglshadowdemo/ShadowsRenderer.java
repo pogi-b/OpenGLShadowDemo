@@ -180,10 +180,10 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
         mCube = new Cube(new float[] {0.0f, 0.0f, 0.0f}, 3.0f, new float[] {0.0f, 0.0f, 1.0f, 1.0f});
         
         //4 small cubes on the ground plane
-        mSmallCube0 = new Cube(new float[] {-4.5f, -4.5f, 4.5f}, 2.0f, new float[] {1.0f, 0.0f, 0.0f, 1.0f});
-        mSmallCube1 = new Cube(new float[] {4.5f, -4.5f, 4.5f}, 2.0f, new float[] {0.0f, 1.0f, 0.0f, 1.0f});
-        mSmallCube2 = new Cube(new float[] {4.5f, -4.5f, -4.5f}, 2.0f, new float[] {0.0f, 1.0f, 1.0f, 1.0f});
-        mSmallCube3 = new Cube(new float[] {-4.5f, -4.5f, -4.5f}, 2.0f, new float[] {1.0f, 0.0f, 1.0f, 1.0f});
+        mSmallCube0 = new Cube(new float[] {-4.0f, -3.9f, 4.0f}, 2.0f, new float[] {1.0f, 0.0f, 0.0f, 1.0f});
+        mSmallCube1 = new Cube(new float[] {4.0f, -3.9f, 4.0f}, 2.0f, new float[] {0.0f, 1.0f, 0.0f, 1.0f});
+        mSmallCube2 = new Cube(new float[] {4.0f, -3.9f, -4.0f}, 2.0f, new float[] {0.0f, 1.0f, 1.0f, 1.0f});
+        mSmallCube3 = new Cube(new float[] {-4.0f, -3.9f, -4.0f}, 2.0f, new float[] {1.0f, 0.0f, 1.0f, 1.0f});
         
         //ground
         mPlane = new Plane();
@@ -212,8 +212,8 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
 			mPCFShadowDynamicBiasProgram = new RenderProgram(R.raw.v_with_shadow,
 					R.raw.f_with_pcf_shadow_dynamic_bias, mShadowsActivity);
 	        
-	        mDepthMapProgram = new RenderProgram(R.raw.v_shadow_map,
-	        												R.raw.f_shadow_map, mShadowsActivity);
+	        mDepthMapProgram = new RenderProgram(R.raw.v_depth_map,
+	        												R.raw.f_depth_map, mShadowsActivity);
         }
         else {
         	// OES_depth_texture is available -> shaders are simplier
@@ -229,8 +229,8 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
 			mPCFShadowDynamicBiasProgram = new RenderProgram(R.raw.depth_tex_v_with_shadow,
 					R.raw.depth_tex_f_with_pcf_shadow_dynamic_bias, mShadowsActivity);
         	
-        	mDepthMapProgram = new RenderProgram(R.raw.depth_tex_v_shadow_map,
-					R.raw.depth_tex_f_shadow_map, mShadowsActivity);
+        	mDepthMapProgram = new RenderProgram(R.raw.depth_tex_v_depth_map,
+					R.raw.depth_tex_f_depth_map, mShadowsActivity);
         }
         	
         
