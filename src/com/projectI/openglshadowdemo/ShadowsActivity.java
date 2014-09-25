@@ -14,6 +14,24 @@ public class ShadowsActivity extends Activity {
 
     private ShadowsGLSurfaceView mGLView;
     private ShadowsRenderer renderer;
+	/**
+	 * Type of shadow bias to reduce unnecessary shadows
+	 * 	- constant bias
+	 * 	- bias value is variable according to slope
+	 */
+	private float mBiasType = 0.0f;
+	/**
+	 * Type of shadow algorithm
+	 * 	- simple shadow (shadow value is only two state (yes/no) so aliasing is visible, no blur effect is possible)
+	 *  - Percentage Closer Filtering (PCF)
+	 */
+	private float mShadowType = 0.0f;
+	/**
+	 * Shadow map size: 
+	 * 	- displayWidth * SHADOW_MAP_RATIO
+	 * 	- displayHeight * SHADOW_MAP_RATIO			
+	 */
+	private float mShadowMapRatio = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,27 +64,26 @@ public class ShadowsActivity extends Activity {
     
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		float shadowRatio = 0.0f;
 		
 	    switch (item.getItemId()) {
 	        case R.id.shadow_type_simple:
-	            renderer.setmShadowType(0.0f);
+	            this.setmShadowType(0.0f);
 	        	item.setChecked(true);
 	        	return true;
 	        case R.id.shadow_type_pcf:
-	        	renderer.setmShadowType(1.0f);
+	        	this.setmShadowType(1.0f);
 	        	item.setChecked(true);
 	            return true;
 	        case R.id.bias_type_constant:
-	        	renderer.setmBiasType(0.0f);
+	        	this.setmBiasType(0.0f);
 	        	item.setChecked(true);
 	        	return true;
 	        case R.id.bias_type_dynamic:
-	        	renderer.setmBiasType(1.0f);
+	        	this.setmBiasType(1.0f);
 	        	item.setChecked(true);
 	        	return true;
 	        case R.id.depth_map_size_0:
-	        	renderer.setmShadowMapRatio(0.5f);
+	        	this.setmShadowMapRatio(0.5f);
 	        	
 	        	// we need to run opengl calls on GLSurface thread
 	        	mGLView.queueEvent(new Runnable() {
@@ -79,7 +96,7 @@ public class ShadowsActivity extends Activity {
 	        	item.setChecked(true);
 	        	return true;
 	        case R.id.depth_map_size_1:
-	        	renderer.setmShadowMapRatio(1.0f);
+	        	this.setmShadowMapRatio(1.0f);
 	        	
 	        	// we need to run opengl calls on GLSurface thread
 	        	mGLView.queueEvent(new Runnable() {
@@ -92,7 +109,7 @@ public class ShadowsActivity extends Activity {
 	        	item.setChecked(true);
 	        	return true;
 	        case R.id.depth_map_size_2:
-	        	renderer.setmShadowMapRatio(1.5f);
+	        	this.setmShadowMapRatio(1.5f);
 	        	
 	        	// we need to run opengl calls on GLSurface thread
 	        	mGLView.queueEvent(new Runnable() {
@@ -105,7 +122,7 @@ public class ShadowsActivity extends Activity {
 	        	item.setChecked(true);
 	        	return true;
 	        case R.id.depth_map_size_3:
-	        	renderer.setmShadowMapRatio(2.0f);
+	        	this.setmShadowMapRatio(2.0f);
 	        	
 	        	// we need to run opengl calls on GLSurface thread
 	        	mGLView.queueEvent(new Runnable() {
@@ -133,4 +150,28 @@ public class ShadowsActivity extends Activity {
         super.onResume();
         mGLView.onResume();
     }
+    
+	public float getmBiasType() {
+		return mBiasType;
+	}
+
+	private void setmBiasType(float mBiasType) {
+		this.mBiasType = mBiasType;
+	}
+
+	public float getmShadowType() {
+		return mShadowType;
+	}
+
+	private void setmShadowType(float mShadowType) {
+		this.mShadowType = mShadowType;
+	}
+
+	public float getmShadowMapRatio() {
+		return mShadowMapRatio;
+	}
+
+	private void setmShadowMapRatio(float mShadowMapRatio) {
+		this.mShadowMapRatio = mShadowMapRatio;
+	}
 }

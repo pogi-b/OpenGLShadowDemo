@@ -24,13 +24,6 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
     private FPSCounter mFPSCounter;
     
     /**
-     * Shadow map size: 
-     * 	- displayWidth * SHADOW_MAP_RATIO
-     * 	- displayHeight * SHADOW_MAP_RATIO			
-     */
-	private float mShadowMapRatio = 1;
-
-	/**
 	 * Handles to vertex and fragment shader programs
 	 */
 	private RenderProgram mSimpleShadowProgram;
@@ -98,6 +91,12 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
      */
 	private int mDisplayWidth;
 	private int mDisplayHeight;
+	
+	/**
+	 * Current shadow map sizes
+	 */
+	private int mShadowMapWidth;
+	private int mShadowMapHeight;
     
 	private boolean mHasDepthTextureExtension = false;
 	
@@ -139,20 +138,6 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
 	
 	private Plane mPlane;
 
-	/**
-	 * Type of shadow bias to reduce unnecessary shadows
-	 * 	- constant bias
-	 * 	- bias value is variable according to slope
-	 */
-	private float mBiasType = 0.0f;
-	
-	/**
-	 * Type of shadow algorithm
-	 * 	- simple shadow (shadow value is only two state (yes/no) so aliasing is visible, no blur effect is possible)
-	 *  - Percentage Closer Filtering (PCF)
-	 */
-	private float mShadowType = 0.0f;
-	
 	public ShadowsRenderer(final ShadowsActivity shadowsActivity) {
 		mShadowsActivity = shadowsActivity;
 	}
@@ -242,8 +227,8 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
 	 */
 	public void generateShadowFBO()
 	{
-		int shadowMapWidth = Math.round(mDisplayWidth * mShadowMapRatio);
-		int shadowMapHeight = Math.round(mDisplayHeight * mShadowMapRatio);
+		mShadowMapWidth = Math.round(mDisplayWidth * mShadowsActivity.getmShadowMapRatio());
+		mShadowMapHeight = Math.round(mDisplayHeight * mShadowsActivity.getmShadowMapRatio());
 		
 		fboId = new int[1];
 		depthTextureId = new int[1];
@@ -255,7 +240,7 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
 		// create render buffer and bind 16-bit depth buffer
 		GLES20.glGenRenderbuffers(1, depthTextureId, 0);
 		GLES20.glBindRenderbuffer(GLES20.GL_RENDERBUFFER, depthTextureId[0]);
-		GLES20.glRenderbufferStorage(GLES20.GL_RENDERBUFFER, GLES20.GL_DEPTH_COMPONENT16, shadowMapWidth, shadowMapHeight);
+		GLES20.glRenderbufferStorage(GLES20.GL_RENDERBUFFER, GLES20.GL_DEPTH_COMPONENT16, mShadowMapWidth, mShadowMapHeight);
 		
 		// Try to use a texture depth component
 		GLES20.glGenTextures(1, renderTextureId, 0);
@@ -272,7 +257,7 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
 		GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fboId[0]);
 		
 		if (!mHasDepthTextureExtension) {
-			GLES20.glTexImage2D( GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, shadowMapWidth, shadowMapHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
+			GLES20.glTexImage2D( GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA, mShadowMapWidth, mShadowMapHeight, 0, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, null);
 			
 			// specify texture as color attachment
 			GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_COLOR_ATTACHMENT0, GLES20.GL_TEXTURE_2D, renderTextureId[0], 0);
@@ -283,7 +268,7 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
 	    }
 		else {
 			// Use a depth texture
-			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_DEPTH_COMPONENT, shadowMapWidth, shadowMapHeight, 0, GLES20.GL_DEPTH_COMPONENT, GLES20.GL_UNSIGNED_INT, null);
+			GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_DEPTH_COMPONENT, mShadowMapWidth, mShadowMapHeight, 0, GLES20.GL_DEPTH_COMPONENT, GLES20.GL_UNSIGNED_INT, null);
 	 
 	        // Attach the depth texture to FBO depth attachment point
 			GLES20.glFramebufferTexture2D(GLES20.GL_FRAMEBUFFER, GLES20.GL_DEPTH_ATTACHMENT, GLES20.GL_TEXTURE_2D, renderTextureId[0], 0);
@@ -329,6 +314,8 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
     	// Write FPS information to console
     	mFPSCounter.logFrame();
+    	
+    	setRenderProgram();
     	
 		// Set program handles for cube drawing.
 		scene_mvpMatrixUniform = GLES20.glGetUniformLocation(mActiveProgram, RenderConstants.MVP_MATRIX_UNIFORM);
@@ -419,8 +406,8 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
     	// bind the generated framebuffer
     	GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, fboId[0]);
     	
-		GLES20.glViewport(0, 0, Math.round(mDisplayWidth * mShadowMapRatio), 
-								Math.round(mDisplayHeight * mShadowMapRatio));
+		GLES20.glViewport(0, 0, mShadowMapWidth, 
+								mShadowMapHeight);
 		
 		// Clear color and buffers
 		GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -480,8 +467,8 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
 		GLES20.glViewport(0, 0, mDisplayWidth, mDisplayHeight);
 		
 		//pass stepsize to map nearby points properly to depth map texture - used in PCF algorithm
-		GLES20.glUniform1f(scene_mapStepXUniform, (float) (1.0 / Math.round(mDisplayWidth * mShadowMapRatio)));
-		GLES20.glUniform1f(scene_mapStepYUniform, (float) (1.0/ Math.round(mDisplayHeight * mShadowMapRatio)));
+		GLES20.glUniform1f(scene_mapStepXUniform, (float) (1.0 / mShadowMapWidth));
+		GLES20.glUniform1f(scene_mapStepYUniform, (float) (1.0/ mShadowMapHeight));
 		
         float[] tempResultMatrix = new float[16];
         
@@ -582,13 +569,13 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
      * Changes render program after changes in menu
      */
     private void setRenderProgram() {
-		if (this.mShadowType < 0.5)
-			if (this.mBiasType < 0.5)
+		if (mShadowsActivity.getmShadowType() < 0.5)
+			if (mShadowsActivity.getmBiasType() < 0.5)
 				mActiveProgram = mSimpleShadowProgram.getProgram();
 			else
 				mActiveProgram = mSimpleShadowDynamicBiasProgram.getProgram();
 		else
-			if (this.mBiasType < 0.5)
+			if (mShadowsActivity.getmBiasType() < 0.5)
 				mActiveProgram = mPCFShadowProgram.getProgram();
 			else
 				mActiveProgram = mPCFShadowDynamicBiasProgram.getProgram();	
@@ -625,32 +612,4 @@ public class ShadowsRenderer implements GLSurfaceView.Renderer {
     public void setRotationY(float rotationY) {
         mRotationY = rotationY;
     }
-    
-	public float getmBiasType() {
-		return mBiasType;
-	}
-
-	public void setmBiasType(float mBiasType) {
-		this.mBiasType = mBiasType;
-		
-		setRenderProgram();
-	}
-
-	public float getmShadowType() {
-		return mShadowType;
-	}
-
-	public void setmShadowType(float mShadowType) {
-		this.mShadowType = mShadowType;
-		
-		setRenderProgram();
-	}
-
-	public float getmShadowMapRatio() {
-		return mShadowMapRatio;
-	}
-
-	public void setmShadowMapRatio(float mShadowMapRatio) {
-		this.mShadowMapRatio = mShadowMapRatio;
-	}
 }
